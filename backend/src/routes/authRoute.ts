@@ -1,0 +1,90 @@
+import express,{Request, Response} from 'express'
+import {preprocess, string, z} from 'zod';
+import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv'; 
+dotenv.config();
+
+const prisma = new PrismaClient();
+export { prisma };
+const app = express();
+app.use(express.json());
+const router = express.Router();
+
+router.get('/test', (req:Request, res:Response)=>{
+        res.send('this is auth route ');
+})
+
+const User = z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    name: z.string()
+})
+router.post('/signUp',async(req:Request, res:Response)=>{
+    const result = User.safeParse(req.body);
+    if(!result.success){
+        res.status(404).json()
+    }else{
+        try {
+            const user = await prisma.user.create({
+                data: {
+                    email: result.data.email,
+                    password: result.data.password,
+                    name: result.data.name
+                },
+            })
+            const token = jwt.sign(
+                {password: user.password},
+                process.env.SECRET_KEY || 'default_secret_key',
+                
+            )
+
+            res.status(200).json({
+                msg: 'user created successfully',
+                user,
+                token
+            })
+        } catch (error) {
+            res.json({msg: 'somethings up with the db or the route',Error});
+        }
+    }
+})
+ const SigninSchema = z.object({
+    email: z.string().email(),
+    password: z.string()
+ })
+router.post('/signin',async (req:any, res:any)=>{
+    const result =  SigninSchema.safeParse({
+        email: req.body.email,
+        password: req.body.password
+    })
+    if(!result.success){
+        res.status(400).json({msg: 'something wrong with inputs '})
+    }else{
+        try {
+            const user  = await prisma.user.findUnique({
+                where:{ email: result.data.email}
+            })
+
+            if(!user || user.password !=result.data.password){
+                return res.status(401).json({ error: 'Invalid email or password' });
+            }
+
+            const token = jwt.sign(
+                {email: user.email},
+                process.env.SECRET_KEY || 'default_secret_key',
+                {expiresIn: '2hr'}
+            )
+            res.json({
+                msg:'login successfully ',
+                token
+            })
+        } catch (error) {
+            res.status(500).json({ msg: 'Internal server error', error });
+        }
+    }
+})
+export default router;
+
+
+
