@@ -1,6 +1,8 @@
 import express, { Request,  Response } from 'express';
 import router from './routes/authRoute'
 const app = express(); 
+const cors = require('cors');
+app.use(cors());
 
 app.use(express.json());
  const port = 3000;

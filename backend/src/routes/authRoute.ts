@@ -1,5 +1,5 @@
 import express,{Request, Response} from 'express'
-import {preprocess, string, z} from 'zod';
+import { z} from 'zod';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'; 
@@ -22,7 +22,9 @@ const User = z.object({
 })
 router.post('/signUp',async(req:Request, res:Response)=>{
     const result = User.safeParse(req.body);
+    console.log("Received body:", req.body)
     if(!result.success){
+        console.log("Validation error:", result.error.format());
         res.status(404).json()
     }else{
         try {
