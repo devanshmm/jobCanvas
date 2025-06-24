@@ -3,6 +3,7 @@ import { z} from 'zod';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'; 
+import Authentication from '../middleware/authMiddleware';
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -11,8 +12,8 @@ const app = express();
 app.use(express.json());
 const router = express.Router();
 
-router.get('/test', (req:Request, res:Response)=>{
-        res.send('this is auth route ');
+router.get('/test', Authentication,(req:Request, res:Response)=>{
+        res.send('this is auth route ').json({msg:"hiiiiiii"});
 })
 
 const User = z.object({
@@ -36,7 +37,7 @@ router.post('/signUp',async(req:Request, res:Response)=>{
                 },
             })
             const token = jwt.sign(
-                {password: user.password},
+                {id: user.id},
                 process.env.SECRET_KEY || 'default_secret_key',
                 
             )
@@ -66,6 +67,7 @@ router.post('/signin',async (req:any, res:any)=>{
         try {
             const user  = await prisma.user.findUnique({
                 where:{ email: result.data.email}
+                
             })
 
             if(!user || user.password !=result.data.password){
@@ -73,9 +75,9 @@ router.post('/signin',async (req:any, res:any)=>{
             }
 
             const token = jwt.sign(
-                {email: user.email},
+                {id: user.id},
                 process.env.SECRET_KEY || 'default_secret_key',
-                {expiresIn: '2hr'}
+                
             )
             res.json({
                 msg:'login successfully ',

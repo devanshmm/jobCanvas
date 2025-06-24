@@ -16,6 +16,8 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
     try {
         const response =  await axios.post('http://localhost:3000/api/signin', formData)
         console.log(response)
+        const token = response.data.token 
+        localStorage.setItem('token',token)
     } catch (err) {
         setError('signup failed try again')
     }
