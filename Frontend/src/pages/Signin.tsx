@@ -1,12 +1,16 @@
 import axios from "axios";
 import type React from "react";
 import { useState, type ChangeEvent } from "react";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+ 
 
 const Signin: React.FC = ()=>{
     const[formData, setFormData] = useState({
         email: '',
         password :''
     })
+    const navigate = useNavigate()
     const[error, setError]= useState('')
 const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
     setFormData({...formData,[e.target.name]: e.target.value})
@@ -16,8 +20,9 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
     try {
         const response =  await axios.post('http://localhost:3000/api/signin', formData)
         console.log(response)
-        const token = response.data.token 
+        const token = response.data.token   
         localStorage.setItem('token',token)
+      
     } catch (err) {
         setError('signup failed try again')
     }
@@ -75,7 +80,7 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
           <div className="mt-8 text-center">
             <p className="text-gray-500 text-sm">
               Already have an account?{' '}
-              <a href="/signin" className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
+              <a href="/home" className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
                 Sign in
               </a>
             </p>
