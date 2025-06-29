@@ -21,6 +21,9 @@ const Signup = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/api/signUp', formData);
+      const token = response.data.token;
+      localStorage.setItem('token',token);
+      navigate('/home');
       
     } catch (err) {
       setError('Signup failed. Try again.');

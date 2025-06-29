@@ -22,6 +22,7 @@ const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
         console.log(response)
         const token = response.data.token   
         localStorage.setItem('token',token)
+        navigate('/home');
       
     } catch (err) {
         setError('signup failed try again')
