@@ -21,6 +21,7 @@ model user {
   createdAt DateTime @default(now())
 
   job job[]
+  resume Resume?
 }
 
 model job {
@@ -36,4 +37,16 @@ model job {
   updatedAt   DateTime @updatedAt
   userId      String
   user        user     @relation(fields: [userId], references: [id])
+}
+
+
+model Resume {
+  id  String @id @default(uuid())
+  fileName String
+  fileurl String
+  userId String  @unique // 
+  user user @relation(fields: [userId], references: [id])
+
+
+
 }

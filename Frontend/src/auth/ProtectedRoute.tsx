@@ -1,6 +1,6 @@
 
 import type { JSX } from "react"
-import { Navigate, replace } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 interface props {
     children: JSX.Element;

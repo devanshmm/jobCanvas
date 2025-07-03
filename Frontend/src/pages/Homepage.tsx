@@ -1,5 +1,6 @@
 import JobCard from "@/components/app/JobCard";
 import JobForm from "@/components/app/JobForm";
+import { Resume } from "@/components/app/ResumeAnalyser/ResumeAnalyser";
 import { useState } from "react";
 
 const Home = () => {
@@ -10,6 +11,7 @@ const Home = () => {
     
     return (
         <div className="min-h-screen bg-gray-50 p-4">
+            <Resume/>
             {/* Header with Add Job Button */}
             <div className="mb-6">
                 <div className="flex justify-between items-center">
