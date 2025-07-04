@@ -17,9 +17,15 @@ export const Resume: React.FC = () => {
 
     const formData = new FormData();
     formData.append("resume", form);
+    const token = localStorage.getItem('token')
+   
 
     try {
-      const response = await axios.post("http://localhost:3000/apiv2/upload", formData);
+      const response = await axios.post("http://localhost:3000/apiv2/upload", formData,{
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+      });
       console.log("Upload successful:", response.data);
       setForm(null);
     } catch (err) {

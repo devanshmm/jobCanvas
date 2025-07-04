@@ -21,6 +21,7 @@ model user {
   createdAt DateTime @default(now())
 
   job job[]
+
   resume Resume?
 }
 
